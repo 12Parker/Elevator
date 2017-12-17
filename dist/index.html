@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>4TR3 Control Panel</title>
+
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<script type = "text/javascript" src = "../src/vue.js"></script>
+	<script type = "text/javascript" src = "../src/jquery-3.2.1.js"></script>
+	<script src="bundle.js"></script>
+	
+	<style>
+		:root {
+			--main-color: white;
+			--content-color: white;
+			--profile-color: navy;
+			--extra-color: white;
+			--footer-color: #506A87;
+		}
+		@font-face{
+			font-family: 'Raleway', sans-serif;
+			src: url('../src/fonts/Raleway-Black.ttf');
+			font-family:'digital-clock-font';
+			src: url('../src/fonts/digital-7.ttf');
+		}
+		html {
+			height: 100vh;
+			font-family: 'Raleway';
+			font-size: 1em;
+			background-color: var(--main-color);
+		}
+		body {
+			margin: 0;
+			padding: 0;
+			height: 100vh;
+			color: black;
+		}
+		#title {
+			color: black;
+			text-align: center;
+		}
+		.container {
+  			display: grid;
+  			grid-template-areas: 
+  				"header header header"
+  				"content content content"
+  				"extra extra extra"
+  				"bio bio bio"
+  				"footer footer footer";
+  			grid-template-columns: 1/3fr 1/3fr 1/3fr;
+  			grid-template-rows: 0.25fr 0.25fr 0.25fr 0.25fr;
+		}
+		.grid {
+			margin: 1em;
+			background-color: var(--main-color);
+			color: #fff;
+			padding: 25px;
+			font-size: 1em;
+			border-bottom: 0.51px solid #506A87;
+		}
+		.header {
+			grid-area: header;
+		}
+		.content {
+			grid-area: content;
+			background: var(--content-color); 
+			display: flex;
+			flex-direction: row;
+			flex-wrap: wrap;
+			justify-content: space-around;
+		}
+		.maintenance , .totalRunning {
+			order: 1;
+		}
+		.requested , .totalMaintenance {
+			order: 2;
+		}
+		.maintenance , .requested , .totalRunning  , .totalMaintenace {
+			color: black;
+			text-align: center;
+		}
+		.extra {
+			grid-area: extra;
+			background: var(--content-color); 
+			display: flex;
+			flex-direction: row;
+			flex-wrap: wrap;
+			justify-content: space-around;
+		}
+		.bio {
+			margin:0;
+			grid-area: bio;
+			background: var(--content-color); 
+			display: flex;
+			flex-direction: row;
+			justify-content: space-around;
+			color: black;
+		}
+		#bioItem {
+			text-align: center;
+		}
+		.footer {
+			grid-area: footer;
+			width: 100%;
+			background: var(--footer-color);
+			text-align: center;
+		}
+		#totalRunningTimer , #totalMaintenanceTimer, #percentMaintenanceTime , #mostRequestedFloor {
+			font-family: digital-clock-font;
+			font-size: 2em;
+		}
+		.img-circle {
+			border-radius: 50%;
+			width: 50px;
+			height: 50px;
+		}
+		
+		@media only screen and (max-width: 510px) {
+			.chartContainer , body {
+				max-height: 100%;
+				overflow: hidden !important;
+			}
+			/* For mobile phones: */
+			.container {
+				grid-template-areas: 
+				"header"
+				"content"
+				"extra"
+				"bio"
+				"footer";
+				grid-template-columns: 1fr;
+				grid-template-rows: 0.25fr 0.25fr 0.25fr 0.25fr 0.25fr;
+			}
+			.content {
+				flex-direction: column;				
+			}
+			.extra {
+				flex-direction: column;
+				justify-content: space-between;
+			}
+			.bio {
+				display: flex;
+				flex-direction: column;
+			}
+		} /* End Media*/
+	</style>
+</head>
+<body>
+	<div class = "container">
+		<div class = "grid header">
+			<h1 id = "title"> {{ message }} </h1>		
+		</div> <!-- /Header -->
+
+		<div class = "grid content">
+			<div class = "maintenance">
+				<h3 id = "maintenanceTime">Percent Maintenance Time</h3>
+				<div class = "chartContainer">
+					<canvas id="maintenanceTimeChart"></canvas>
+				</div>
+				<span id = "percentMaintenanceTime">60 %</span>
+			</div>
+			<div class = "requested">
+				<h3 id = "maintenanceTime">Most Requested Floor</h3>
+				<div class = "chartContainer">
+	    			<canvas id="requestedFloorChart"></canvas>
+				</div>
+				<span id = "mostRequestedFloor">Floor 3</span>
+			</div>
+	    </div>	<!-- /content -->		
+
+	    <div class = "grid extra">
+	    	<div class = "totalRunning">
+				<h3 id = "totalRunningTimeTitle">Running Time</h3>
+				<span id = "totalRunningTimer">6:35:00</span>
+			</div>
+			<div class = "totalMaintenace">
+				<h3 id = "totalMaintenaceTimeTitle">Total Maintenance Time</h3>
+				<span id = "totalMaintenanceTimer">6:35:00</span>
+			</div>
+	    </div> <!-- /extra -->
+
+	    <div class = "grid bio">
+	    	<div id ="bioItem">
+	    		<img class="img-circle" src="../src/images/user.png">
+	    		<p>Cameron Parker</p>
+	    		<p>Apsiring Software Engineer</p>
+	    	</div>
+
+	    	<div id ="bioItem">
+	    		<img class="img-circle" src="../src/images/user.png">
+	    		<p>Riley Smids</p>
+	    		<p>Aspiring Software Engineer</p>
+	    	</div>
+
+	    	<div id ="bioItem">
+	    		<img class="img-circle" src="../src/images/user.png">
+	    		<p>Tushar Mohan</p>
+	    		<p>Aspiring Software Engineer</p>
+	    	</div>
+	    </div> <!-- /bio -->
+
+
+		<div class = "footer">
+			<p>&copy McMaster University</p>
+		</div><!-- /Footer -->
+
+	</div> <!-- /container -->
+	<script>
+		//Script for header block
+		var title = new Vue ( {
+			el: '#title' ,
+			data : {
+				message: 'Elevator Control Panel'
+			}
+		})
+	</script>
+<script src="bundle.js"></script>
+</html>

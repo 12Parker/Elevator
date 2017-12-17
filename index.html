@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>4TR3 Control Panel</title>
+
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="refresh" content="60; URL=http://4tr3.space">
+	<script type = "text/javascript" src = "src/js/vue.js"></script>
+	<script type = "text/javascript" src = "src/js/jquery-3.2.1.js"></script>
+	<script src = "../node_modules/chart.js/dist/Chart.min.js"></script>
+	<!--
+	<script src="dist/bundle.js"></script>
+-->
+	<script type = "text/javascript" src = "src/js/maintenanceTime.js"></script>
+	<script type = "text/javascript" src = "src/js/mostRequestedFloor.js"></script>
+	<script type = "text/javascript" src = "src/js/timerValues.js"></script>
+	
+	<link href="https://fonts.googleapis.com/css?family=Open+Sans+Condensed:300|Raleway|Roboto+Condensed|Slabo+27px" rel="stylesheet">
+	
+	<style>
+		:root {
+			--main-color: white;
+			--content-color: white;
+			--profile-color: navy;
+			--extra-color: white;
+			--footer-color: #5e6a71;
+		}
+		@font-face{
+			font-family: 'Raleway', sans-serif;
+			src: url('src/fonts/Raleway-Black.ttf');
+			font-family:'digital-clock-font';
+			src: url('src/fonts/digital-7.ttf');
+		}
+		html {
+			height: 100vh;
+			font-family: 'Raleway';
+			font-size: 1em;
+			background-color: var(--main-color);
+		}
+		body {
+			margin: 0;
+			padding: 0;
+			height: 100vh;
+			color: black;
+		}
+		#title {
+			color: black;
+			text-align: center;
+		}
+		.container {
+  			display: grid;
+  			grid-template-areas: 
+  				"header header header"
+  				"content content content"
+  				"extra extra extra"
+  				"bio bio bio"
+  				"macBio macBio macBio"
+  				"footer footer footer";
+  			grid-template-columns: 1/3fr 1/3fr 1/3fr;
+  			grid-template-rows: 0.25fr;
+		}
+		.grid {
+			margin: 1em;
+			background-color: var(--main-color);
+			color: #fff;
+			padding: 25px;
+			font-size: 1em;
+			border-bottom: 0.51px solid #506A87;
+		}
+		.header {
+			grid-area: header;
+		}
+		.content {
+			grid-area: content;
+			background: var(--content-color); 
+			display: flex;
+			flex-direction: row;
+			flex-wrap: wrap;
+			justify-content: space-around;
+		}
+		.maintenance , .totalRunning {
+			order: 1;
+		}
+		.requested , .totalMaintenance {
+			order: 2;
+		}
+		.maintenance , .requested , .totalRunning  , .totalMaintenace {
+			color: black;
+			text-align: center;
+		}
+		.extra {
+			grid-area: extra;
+			background: var(--content-color); 
+			display: flex;
+			flex-direction: row;
+			flex-wrap: wrap;
+			justify-content: space-around;
+		}
+		.bio {
+			
+			grid-area: bio;
+			background: var(--content-color); 
+			display: flex;
+			flex-direction: row;
+			justify-content: space-around;
+			color: black;
+		}
+		#bioItem {
+			text-align: center;
+		}
+		.macBio {
+			margin:0;
+			grid-area: macBio;
+			display: flex;
+			flex-direction: row;
+			align-items: center;
+			justify-content: space-between;
+			background: (var(--content-color));
+			color: black;
+		}
+		#macBioItem {
+			padding: 10px;
+			text-align: center;
+		}
+		#macLogo {
+			padding-right: 25px;
+			border-right: 0.51px solid #506A87;
+			width: 150px;
+			height: 100px;
+		}
+		#totalRunningTimer , #totalMaintenanceTimer, #percentMaintenanceTime , #mostRequestedFloor {
+			font-family: digital-clock-font;
+			font-size: 2em;
+		}
+		.img-circle {
+			border-radius: 50%;
+			width: 50px;
+			height: 50px;
+		}
+		.footer {
+			grid-area: footer;
+			width: 100%;
+			background: var(--footer-color);
+			color: white;
+			font-size: 0.9em;
+		}
+		#footerTitle {
+			text-align: left;
+			margin: 10px;
+		}
+		#footerLink {
+			margin: 10px;
+			text-align: left;
+			font-size: 0.8em;
+		}
+		#footerLink > a {
+			text-decoration: none;
+			color: white;
+		}
+		
+		@media only screen and (max-width: 510px) {
+			.chartContainer {
+				overflow-x: hidden !important;
+			}
+			body {
+				max-width: 100%;
+				overflow-x: hidden !important;
+			}
+			/* For mobile phones: */
+			.container {
+				grid-template-areas: 
+				"header"
+				"content"
+				"extra"
+				"bio"
+				"macBio"
+				"footer";
+				grid-template-columns: 1fr;
+				grid-template-rows: 0.25fr;
+			}
+			.content {
+				flex-direction: column;				
+			}
+			.extra {
+				flex-direction: column;
+				justify-content: space-between;
+			}
+			.bio , .macBio {
+				display: flex;
+				flex-direction: column;
+			}
+			#macLogo {
+				border: none;
+			}
+		} /* End Media*/
+	</style>
+</head>
+<body>
+	<div class = "container">
+		<div class = "grid header">
+			<h1 id = "title"> {{ message }} </h1>		
+		</div> <!-- /Header -->
+
+		<div class = "grid content">
+			<div class = "maintenance">
+				<h3 id = "maintenanceTime">Percent Maintenance Time</h3>
+				<div class = "chartContainer">
+					<canvas id="maintenanceTimeChart"></canvas>
+					<script async>displayMaintenanceTime();</script>
+				</div>
+				<!-- <span id = "percentMaintenanceTime">60 %</span> -->
+			</div>
+			<div class = "requested">
+				<h3 id = "maintenanceTime">Most Requested Floor</h3>
+				<div class = "chartContainer">
+	    			<canvas id="requestedFloorChart"></canvas>
+	    			<script async>displayRequestedFloors();</script>
+				</div>
+				<!-- <span id = "mostRequestedFloor">Floor 3</span> -->
+			</div>
+	    </div>	<!-- /content -->		
+
+	    <div class = "grid extra">
+	    	<div class = "totalRunning">
+				<h3 id = "totalRunningTimeTitle">Running Time</h3>
+				<span id = "totalRunningTimer">
+					<script async>displayTimerValues();</script>
+				</span>
+			</div>
+			<div class = "totalMaintenace">
+				<h3 id = "totalMaintenaceTimeTitle">Total Maintenance Time</h3>
+				<span id = "totalMaintenanceTimer">
+					<script async>displayTimerValues();</script>
+				</span>
+			</div>
+	    </div> <!-- /extra -->
+
+	    <div class = "grid bio">
+	    	<div id ="bioItem">
+	    		<a href = "https://linkedin.com/in/12camparker21/">
+	    			<img class="img-circle" src="src/images/ProfilePicCameron.jpg">
+	    		</a>
+	    		<p>Cameron Parker</p>
+	    		<p>Aspiring Software Engineer</p>
+	    	</div>
+
+	    	<div id ="bioItem">
+	    		<a href = "https://www.linkedin.com/in/riley-smids-261330a4/">
+	    			<img class="img-circle" src="src/images/ProfilePicRiley.jpg">
+	    		</a>
+	    		<p>Riley Smids</p>
+	    		<p>Aspiring Electrical Engineer </p>
+	    	</div>
+
+	    	<div id ="bioItem">
+	    		<a href = "https://www.linkedin.com/in/mohant3/">
+	    			<img class="img-circle" src="src/images/user.png">
+	    		</a>
+	    		<p>Tushar Mohan</p>
+	    		<p>Aspiring Automation Engineer</p>
+	    	</div>
+	    </div> <!-- /bio -->
+
+	    <!-- McMaster Bio -->
+	    <div class = "grid macBio">
+	    	<div id = "macBioItem">
+	    		<img id = "macLogo" src = "src/images/MacLogo.jpg">
+	    	</div>
+	    	<div id = "macBioItem">
+	    		<h3>McMaster University - W Booth School of Engineering Practice and Technology</h3>
+	    		<p>W Booth School - 1280 Main Street West
+	    			Hamilton, Ontario, Canada
+	    			L8S 0A3</p>
+	    	</div>
+	    </div>
+	    <!-- /McMaster Bio -->
+
+	    <!-- Examples -->
+	    <!-- /Examples -->
+
+
+		<div class = "footer">
+			<div id ="footerTitle">
+				<p>Automation Engineering Technology</p>
+			</div>
+			<div id ="footerLink">
+				<a href = "https://github.com/12Parker/Elevator">GitHub</a> <br />
+				<a href = "https://youtu.be/ppjbTuAmgws">YouTube</a> <br />
+				<a href = "#">Technical Report</a>
+			</div>
+		</div><!-- /Footer -->
+
+	</div> <!-- /container -->
+	<script>
+		//Script for header block
+		var title = new Vue ( {
+			el: '#title' ,
+			data : {
+				message: 'Elevator Data Historian'
+			}
+		})
+	</script>
+</body>
+</html>
