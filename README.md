@@ -2,6 +2,9 @@
 
 The purpose of this project is to build a simple elevator controlled by a Siemens PLC. The elevator has three floors and will be moved using a 1/3HP Siemens motor. The elevator is controlled using a set of pushbuttons, and includes an E-Stop and key switch. The key switch is used for manually controlling the elevator in case it breaks down between floors. A large HMI is also included for maintenance purposes (an example can be seen below). Finally, a webpage is used to display historical data from the elevator, such as total maintenance time, total running time, and most requested floor. 
 
+
+![Screenshot](./images/MainPage.png "Screenshot of site")
+
 ## Authors
 
 * **Tushar Mohan** - *Initial work* - [Tushar](https://github.com/)
